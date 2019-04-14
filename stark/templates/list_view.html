@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>Title</title>
+    <style>
+        .filter a{
+            text-decoration: none;
+            color: gray;
+        }
+        .show{
+            color: green!important;
+        }
+    </style>
+</head>
+<body>
+<h3>查看{{ model_name }}数据</h3>
+<div class="container">
+    <div class="row">
+        <div class="col-md-9">
+            <a href="add/" class="btn btn-primary">添加数据</a>
+            {% if showlist.confg.list_search %}
+                <form action="" class="pull-right">
+                    <input type="text" name="q" value="{% if key_word %}{{ key_word }}{% endif %}">
+                    <button>submit</button>
+                </form>
+            {% endif %}
+            <form action="" method="post">
+                {% csrf_token %}
+                <select name="action" style="width: 250px;display: inline-block;padding: 3px">
+                    <option>......</option>
+                    {% for i in showlist.get_action_list %}
+                        <option value="{{ i.name }}">{{ i.desc }}</option>
+                    {% endfor %}
+
+                </select>
+                <button type="submit" class="btn btn-primary">Go</button>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        {% for i in header_list %}
+                            <th>{{ i }}</th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for i in new_data_list %}
+                        <tr>
+                            {% for j in i %}
+                                <td>{{ j }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <nav>
+                    <ul class="pagination pull-right">
+                        {{ showlist.pager.page_html|safe }}
+                    </ul>
+                </nav>
+            </form>
+        </div>
+        <div class="col-md-3">
+            <div class="filter">
+            <h4>Filter</h4>
+                {% for title,tags in showlist.get_filter_linktages.items %}
+                    <div class="well">
+                        <p>{{ title.upper }}</p>
+                        {% for tag in tags %}
+                            <p>{{ tag|safe }}</p>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $("#choice").click(function () {
+        if ($(this).prop("checked")) {
+            $(".item").prop("checked", true)
+        }
+        else {
+            $(".item").prop("checked", false)
+        }
+
+
+    })
+</script>
+</body>
+</html>
